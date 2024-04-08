@@ -122,7 +122,12 @@ pub async fn auto(secrets: Secrets) -> anyhow::Result<()> {
 }
 
 pub async fn manual(secrets: Secrets, input: String) -> anyhow::Result<()> {
-    let (stream, thumb, title) = call_pytube(input.trim().to_string())?;
+    let (stream, thumb, title) = match call_pytube(input.trim().to_string()) {
+        Ok((s, t, tt)) => (s, t, tt),
+        Err(_) => {
+            panic!();
+        },
+    };
     println!("PROCESS: Downloading video...");
 
     // Download video

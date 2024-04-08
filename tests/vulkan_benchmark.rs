@@ -1,4 +1,8 @@
-use std::{process::{Command, Stdio}, thread, time::Duration};
+use std::{
+    process::{Command, Stdio},
+    thread,
+    time::Duration,
+};
 
 #[test]
 #[ignore]

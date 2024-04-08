@@ -53,7 +53,7 @@ pub async fn scale(
         .spawn()?
         .wait()
         .expect("Failed to start ffmpeg process");
-    
+
     // Speed up video
     let _ = Command::new("ffmpeg")
         .arg("-i")

@@ -5,13 +5,16 @@ pub fn call_pytube(url: String) -> anyhow::Result<(String, String, String)> {
     let c: Context = python! {
         from pytube import YouTube
 
-        yt = YouTube('url)
+        try:
+            yt = YouTube('url)
 
-        stream = yt.streams.filter(progressive=True).get_highest_resolution().url
-        thumb = yt.thumbnail_url
-        title = yt.title
-        (stream, thumb, title)
+            stream = yt.streams.filter(progressive=True).get_highest_resolution().url
+            thumb = yt.thumbnail_url
+            title = yt.title
+            (stream, thumb, title)
 
+        except Exception:
+            raise Exception("Error while processing pytube. Continue...")
     };
 
     let stream = c.get("stream");

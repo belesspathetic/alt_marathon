@@ -1,46 +1,33 @@
-use regex::Regex;
-
 pub fn gen_text(title: String) -> (String, String, String) {
-    let re = Regex::new(r"\p{Emoji}").unwrap();
-    let clean_text = re.replace_all(title.as_str(), "");
-    let parts: Vec<&str>;
-    let mut _top_text = String::new();
-    let mut _bottom_text = String::new();
-
-    let mut _font_size = String::new();
-
-    // Generate text
-    if clean_text.contains(".") {
-        parts = clean_text.split(".").collect();
-        if parts.len() >= 4 {
-            _top_text = format!("{}{}", parts[0], parts[1]);
-            _bottom_text = format!("{}{}", parts[2], parts[3]);
-        } else {
-            _top_text = parts[0].to_string();
-
-            if parts[1].chars().count() >= 45 || parts[0].chars().count() >= 45 {
-                _font_size = "26".to_string()
+    let clean_text: String = title
+        .replace("\u{fe0f}", " ")
+        .chars()
+        .filter_map(|c| {
+            let uc = c as u32;
+            if (uc >= 0x1F600 && uc <= 0x1F64F) ||   // Emoji in the basic plane
+            (uc >= 0x1F300 && uc <= 0x1F5FF) ||   // Repair symbols
+            (uc >= 0x1F680 && uc <= 0x1F6FF) ||   // Transport and map symbols
+            (uc >= 0x2600 && uc <= 0x27BF) ||     // Weather symbols
+            (uc >= 0x1F300 && uc <= 0x1F6FF) ||   // Emoji from addings A and B
+            (uc >= 0x1F900 && uc <= 0x1F9FF)
+            {
+                Some(' ')
             } else {
-                _font_size = "42".to_string()
+                Some(c)
             }
-            _bottom_text = parts[1].to_string();
-        }
-    } else if clean_text.contains("|") {
-        parts = clean_text.split("|").collect();
-        _top_text = parts[0].to_string();
-        _bottom_text = parts[1].to_string();
-        if parts[1].chars().count() >= 45 || parts[0].chars().count() >= 45 {
-            _font_size = "26".to_string()
-        } else {
-            _font_size = "42".to_string()
-        }
-    } else {
-        parts = clean_text.split(" ").collect();
-        let mid = parts.len() / 2;
-        _top_text = parts[..mid].join(" ");
-        _bottom_text = parts[mid..].join(" ");
-        _font_size = "26".to_string()
-    }
+        })
+        .collect();
+    let clean_text = clean_text
+        .split_whitespace()
+        .collect::<Vec<&str>>()
+        .join(" ");
+    let parts: Vec<&str>;
 
-    (_top_text, _bottom_text, _font_size)
+    parts = clean_text.split(" ").collect();
+    let mid = parts.len() / 2;
+    let top_text = parts[..mid].join(" ");
+    let bottom_text = parts[mid..].join(" ");
+    let font_size = "32".to_string();
+
+    (top_text, bottom_text, font_size)
 }
