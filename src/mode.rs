@@ -56,16 +56,13 @@ pub async fn auto(secrets: Secrets) -> anyhow::Result<()> {
         }
 
         let url = format!("{}{}", BASE, info.href);
-        let mut _stream = String::new();
-        let mut _thumb = String::new();
 
         // Get stream
-        match call_pytube(url) {
-            Ok((stream, thumb, _)) => {
-                _stream = stream;
-                _thumb = thumb;
-            }
-            Err(_) => continue,
+        let (_stream, _thumb, _) = call_pytube(url)?;
+
+        if _stream == "None".to_string() {
+            println!("Video is not avalible. Continue...");
+            continue;
         }
 
         println!("PROCESS: Downloading video...");

@@ -13,8 +13,11 @@ pub fn call_pytube(url: String) -> anyhow::Result<(String, String, String)> {
             title = yt.title
             (stream, thumb, title)
 
-        except Exception:
-            raise Exception("Error while processing pytube. Continue...")
+        except:
+            stream = "None"
+            thumb = "None"
+            title = "None"
+            (stream, thumb, title)
     };
 
     let stream = c.get("stream");
